@@ -177,6 +177,40 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Private section
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;;; Program global variables:
+
+(defvar *bc-bookmarks* ()
+  "List of bookmarks and their records.
+The list is (Bookmark1 Bookmark2 ...) where each Bookmark is (TYPE FILENAME . POSITION)"
+  )
+
+(defvar *bc-current* 0
+  "The current bookmark.  `bc-next' and `bc-previous' would use this as the starting point."
+  )
+
+(defvar *bc-bookmark-just-added* nil
+  "Flag indicates a bookmark has just been added.  `bc-next' and `bc-previous' use this to determine whether to increment or decrement."
+  )
+
+;;; Buffer type constants
+
+(defconst bc--type-unsupported  'unsupported)
+(defconst bc--type-file         'file)
+(defconst bc--type-dired        'dired)
+(defconst bc--type-info         'info)
+(defconst bc--type-system       'system)
+
+;;; Constants
+(defconst bc--menu-buffer       "*Breadcrumb Bookmarks*")
+(defconst bc--file-magic        "WBC")
+(defconst bc--file-version      1)
+(defconst bc--menu-table-offset 7)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Public section
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -284,41 +318,6 @@
   (forward-line bc--menu-table-offset)
   (bc-menu-mode)
   )
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Private section
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-;;; Program global variables:
-
-(defvar *bc-bookmarks* ()
-  "List of bookmarks and their records.
-The list is (Bookmark1 Bookmark2 ...) where each Bookmark is (TYPE FILENAME . POSITION)"
-  )
-
-(defvar *bc-current* 0
-  "The current bookmark.  `bc-next' and `bc-previous' would use this as the starting point."
-  )
-
-(defvar *bc-bookmark-just-added* nil
-  "Flag indicates a bookmark has just been added.  `bc-next' and `bc-previous' use this to determine whether to increment or decrement."
-  )
-
-;;; Buffer type constants
-
-(defconst bc--type-unsupported  'unsupported)
-(defconst bc--type-file         'file)
-(defconst bc--type-dired        'dired)
-(defconst bc--type-info         'info)
-(defconst bc--type-system       'system)
-
-;;; Constants
-(defconst bc--menu-buffer       "*Breadcrumb Bookmarks*")
-(defconst bc--file-magic        "WBC")
-(defconst bc--file-version      1)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Bookmark record functions
@@ -533,8 +532,6 @@ It's the position (point) for normal buffer and (info-node-name point) for Info 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; *Breadcrumb Bookmark* menu functions
-
-(defconst bc--menu-table-offset 7)
 
 (defun bc-menu-redraw ()
   "Redraw the breadcrumb bookmarks in the buffer named `*Breadcrumb Bookmarks*'."

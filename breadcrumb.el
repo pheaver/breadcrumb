@@ -538,6 +538,12 @@ It's the position (point) for normal buffer and (info-node-name point) for Info 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; *Breadcrumb Bookmark* menu functions
 
+(defun bc-revert-buffer (&optional ignore-auto noconfirm)
+  (let ((line (line-number-at-pos (point))))
+    (bc-menu-redraw)
+    (goto-char (point-min))
+    (forward-line (1- line))))
+
 (defun bc-menu-redraw ()
   "Redraw the breadcrumb bookmarks in the buffer named `*Breadcrumb Bookmarks*'."
   (save-excursion
@@ -694,6 +700,7 @@ It's the position (point) for normal buffer and (info-node-name point) for Info 
   (define-key *bc-menu-mode-map* " "        'next-line)
   (define-key *bc-menu-mode-map* "p"        'previous-line)
   (define-key *bc-menu-mode-map* "?"        'describe-mode)
+  (define-key *bc-menu-mode-map* "g"        'revert-buffer)
   )
 
 (defun bc-menu-mode ()
@@ -717,6 +724,7 @@ The following commands are available.
   (setq buffer-read-only t)
   (setq major-mode 'bc-menu-mode)
   (setq mode-name "Breadcrumb Bookmark Menu")
+  (set (make-local-variable 'revert-buffer-function) #'bc-revert-buffer)
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

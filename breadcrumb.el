@@ -314,10 +314,14 @@ The list is (Bookmark1 Bookmark2 ...) where each Bookmark is (TYPE FILENAME . PO
   (setq *bc-current* 0)
   )
 
-(defun bc-list ()
-  "Display the breadcrumb bookmarks in the buffer `*Breadcrumb Bookmarks*' to allow interactive management of them."
-  (interactive)
-  (switch-to-buffer (get-buffer-create bc--menu-buffer))
+(defun bc-list (&optional other-window-p)
+  "Display the breadcrumb bookmarks in the buffer `*Breadcrumb Bookmarks*' to
+allow interactive management of them.  Argument OTHER-WINDOW-P means to select
+other buffer in other window."
+  (interactive "P")
+  (if other-window-p
+      (switch-to-buffer-other-window (get-buffer-create bc--menu-buffer))
+    (switch-to-buffer (get-buffer-create bc--menu-buffer)))
   (bc-menu-redraw)
   (goto-char (point-min))
   (forward-line bc--menu-table-offset)

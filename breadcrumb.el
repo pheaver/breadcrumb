@@ -1,6 +1,7 @@
 ;;; breadcrumb.el --- Breadcrumb.  Set breadcrumb bookmarks and jump to them.
 ;;
 ;; Copyright (C) 2004-2008 William W. Wong
+;; Copyright (C) 2010 Philip Weaver - philip(dot)weaver(at)gmail(dot)com
 ;;
 ;; Author: William W. Wong <williamw520(AT)yahoo(DOT)com>
 ;; Created: October, 2004

@@ -131,6 +131,10 @@
 
 ;;; History:
 ;;
+;;  2008/02/10 William Wong
+;;      Add hook to query-replace to set breadcrumb bookmark before replacing.
+;;      Version 1.1.3 release
+;;
 ;;  2008/02/07 William Wong
 ;;      Add compatibility funciton for quit-window to support both Emacs and XEmacs.
 ;;      Change the sample key bindings to be compatible with both Emacs and XEmacs.
@@ -781,6 +785,12 @@ The following commands are available.
 
 (defadvice tags-search (before bc-tag activate compile)
   "Intercept tags-search to save a breadcrumb bookmark before jumping to tag."
+  (if bc-bookmark-hook-enabled
+      (bc-set))
+  )
+
+(defadvice query-replace (before bc-tag activate compile)
+  "Intercept query-replace to save a breadcrumb bookmark before doing the replacement."
   (if bc-bookmark-hook-enabled
       (bc-set))
   )

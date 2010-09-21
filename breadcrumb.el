@@ -161,7 +161,7 @@
 ;;      Version 1.1 release
 ;;
 ;;  2004/10/18 William Wong
-;;      Initial version.  
+;;      Initial version.
 ;;      Version 1.0 release
 ;;
 
@@ -408,7 +408,7 @@ INDEX the bookmark index (0-based) into the bookmark queue."
     (if (null buffer-bookmark-index)
         ;; Current buffer has no bookmark.  Don't do any jumping.
         nil
-      (setq next-index (bc-bookmarks-circular-find-by 
+      (setq next-index (bc-bookmarks-circular-find-by
                         incremental-func *bc-current* buffer-type buffer-filename))
       (if (= next-index -1)
           nil
@@ -478,8 +478,8 @@ BOOKMARK is the bookmark to jump to, which has the form (FILENAME . POSITION)."
           (position (bc-bookmark-position bookmark)))
       (if (null switch-buffer-func)
           (setq switch-buffer-func 'switch-to-buffer))
-      (cond 
-       ((or (eq type bc--type-file) 
+      (cond
+       ((or (eq type bc--type-file)
             (eq type bc--type-dired))
         (funcall switch-buffer-func (find-file-noselect filename))
         (goto-char position))
@@ -508,7 +508,7 @@ BOOKMARK is the bookmark to jump to, which has the form (FILENAME . POSITION)."
    ((and (boundp 'dired-directory) dired-directory) bc--type-dired)
    ((string= (substring (buffer-name) 0 1) "*") bc--type-system)
    (t bc--type-unsupported)))
-    
+
 (defun bc-get-buffer-filename (type)
   "Get the current buffer's filename."
   (cond
@@ -521,7 +521,7 @@ BOOKMARK is the bookmark to jump to, which has the form (FILENAME . POSITION)."
     (t nil)))
 
 (defun bc-get-buffer-position (type)
-  "Get the position of the current buffer.  
+  "Get the position of the current buffer.
 It's the position (point) for normal buffer and (info-node-name point) for Info buffer."
   (cond
     ((eq type bc--type-info)    (cons Info-current-node (point)))
@@ -553,7 +553,7 @@ It's the position (point) for normal buffer and (info-node-name point) for Info 
            (insert (format " %s%-7s %-12s  %s\n"
                            (cond ((eq index *bc-current*) ">") (t " "))
                            (symbol-name (bc-bookmark-type bookmark))
-                           (bc-bookmark-position-to-str bookmark) 
+                           (bc-bookmark-position-to-str bookmark)
                            (bc-bookmark-filename bookmark)))
            (setq index (1+ index))
            )
@@ -722,8 +722,8 @@ The following commands are available.
 
 (defun bc-bookmarks-save ()
   "Save the bookmarks to file."
-  (let ((data-alist 
-         (list 
+  (let ((data-alist
+         (list
           (cons 'magic-number bc--file-magic)
           (cons 'version bc--file-version)
           (cons 'timestamp (current-time))

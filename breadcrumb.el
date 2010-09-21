@@ -483,7 +483,7 @@ BOOKMARK is the bookmark to jump to, which has the form (FILENAME . POSITION)."
         (funcall switch-buffer-func (find-file-noselect filename))
         (goto-char position))
        ((eq type bc--type-info)
-        (require 'info)
+        (eval-when-compile (require 'info))
         (Info-find-node filename (car position))
         (goto-char (cdr position)))
        ((eq type bc--type-system)

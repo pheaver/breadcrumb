@@ -4,7 +4,7 @@
 ;;
 ;; Author: William W. Wong <williamw520(AT)yahoo(DOT)com>
 ;; Created: October, 2004
-;; Version: 1.1.2
+;; Version: 1.1.4
 ;; Keywords: breadcrumb, quick, bookmark, bookmarks
 
 ;; This file is not part of GNU Emacs.
@@ -131,6 +131,10 @@
 
 ;;; History:
 ;;
+;;  2008/02/29 William Wong
+;;      Minor bug fixes and cleanup
+;;      Version 1.1.4 release
+;;
 ;;  2008/02/10 William Wong
 ;;      Add hook to query-replace to set breadcrumb bookmark before replacing.
 ;;      Version 1.1.3 release
@@ -243,7 +247,7 @@
   (interactive)
   (if *bc-bookmark-just-added*
       (setq *bc-bookmark-just-added* nil))
-  (if (not (null (bc-local-advance-current 'bc-bookmarks-increment)))
+  (if (bc-local-advance-current 'bc-bookmarks-increment)
       (bc-jump (bc-bookmarks-get *bc-current*))
     (message "No breadcrumb bookmark set in local buffer."))
   )
@@ -253,7 +257,7 @@
   (interactive)
   (if *bc-bookmark-just-added*
       (setq *bc-bookmark-just-added* nil))
-  (if (not (null (bc-local-advance-current 'bc-bookmarks-decrement)))
+  (if (bc-local-advance-current 'bc-bookmarks-decrement)
       (bc-jump (bc-bookmarks-get *bc-current*))
     (message "No breadcrumb bookmark set in local buffer."))
   )
@@ -500,7 +504,7 @@ BOOKMARK is the bookmark to jump to, which has the form (FILENAME . POSITION)."
   "Get the type of the current buffer."
   (cond
    ((eq major-mode 'Info-mode) bc--type-info)
-   ((not (null (buffer-file-name))) bc--type-file)
+   ((buffer-file-name) bc--type-file)
    ((and (boundp 'dired-directory) dired-directory) bc--type-dired)
    ((string= (substring (buffer-name) 0 1) "*") bc--type-system)
    (t bc--type-unsupported)))
@@ -742,20 +746,20 @@ The following commands are available.
 
 (defun bc-bookmarks-load-file (file)
   "Load the data-list from file."
-  (when (and (not (null file))
+  (when (and file
              (file-readable-p file))
     (let ((loading-buffer (find-file-noselect file))
           (bookmark-list))
-      (setq data-list (with-current-buffer loading-buffer
-                        (goto-char (point-min))
-                        (read (current-buffer))))
+      (setq bookmark-list (with-current-buffer loading-buffer
+                            (goto-char (point-min))
+                            (read (current-buffer))))
       (kill-buffer loading-buffer)
-      data-list))
+      bookmark-list))
   )
 
 (defun bc-bookmarks-save-file (data-alist file)
   "Save the data-alist to file."
-  (when (and (not (null file))
+  (when (and file
              (file-writable-p file))
     (let ((writing-buffer (find-file-noselect file)))
       (with-current-buffer writing-buffer
@@ -845,6 +849,7 @@ If POS is nil, use current buffer location."
       type
       filename
       position
+      data-list
       (setq *bc-current* 0)
       (1- (length *bc-bookmarks*))
       (buffer-file-name)

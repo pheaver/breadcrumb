@@ -132,6 +132,13 @@
 
 ;;; History:
 ;;
+;;  2010/09 Philip Weaver
+;;      Add argument other-window-p to bc-list function
+;;      Define bc-revert-buffer and bind 'g' to revert-buffer
+;;      Add bc-switch-buffer-func
+;;      Other minor changes and cleanup (dos2unix, delete-trailing-whitespace,
+;;         eliminate compile errors and warnings)
+;;
 ;;  2008/02/29 William Wong
 ;;      Minor bug fixes and cleanup
 ;;      Version 1.1.4 release

@@ -251,7 +251,7 @@ The list is (Bookmark1 Bookmark2 ...) where each Bookmark is (TYPE FILENAME . PO
 
 
 ;;; User callable functions
-
+;;;###autoload
 (defun bc-set ()
   "Set a bookmark at the current buffer and current position."
   (interactive)
@@ -270,6 +270,7 @@ The list is (Bookmark1 Bookmark2 ...) where each Bookmark is (TYPE FILENAME . PO
           ))))
   )
 
+;;;###autoload
 (defun bc-previous ()
   "Jump to the previous bookmark."
   (interactive)
@@ -279,6 +280,7 @@ The list is (Bookmark1 Bookmark2 ...) where each Bookmark is (TYPE FILENAME . PO
   (bc-jump (bc-bookmarks-get *bc-current*))
   )
 
+;;;###autoload
 (defun bc-next ()
   "Jump to the next bookmark."
   (interactive)
@@ -288,6 +290,7 @@ The list is (Bookmark1 Bookmark2 ...) where each Bookmark is (TYPE FILENAME . PO
   (bc-jump (bc-bookmarks-get *bc-current*))
   )
 
+;;;###autoload
 (defun bc-local-previous ()
   "Jump to the previous bookmark in the local buffer."
   (interactive)
@@ -298,6 +301,7 @@ The list is (Bookmark1 Bookmark2 ...) where each Bookmark is (TYPE FILENAME . PO
     (message "No breadcrumb bookmark set in local buffer."))
   )
 
+;;;###autoload
 (defun bc-local-next ()
   "Jump to the next bookmark in the local buffer."
   (interactive)
@@ -308,12 +312,14 @@ The list is (Bookmark1 Bookmark2 ...) where each Bookmark is (TYPE FILENAME . PO
     (message "No breadcrumb bookmark set in local buffer."))
   )
 
+;;;###autoload
 (defun bc-goto-current ()
   "Jump to the current bookmark."
   (interactive)
   (bc-jump-to *bc-current*)
   )
 
+;;;###autoload
 (defun bc-clear ()
   "Clear all the breadcrumb bookmarks in the queue."
   (interactive)
@@ -321,6 +327,7 @@ The list is (Bookmark1 Bookmark2 ...) where each Bookmark is (TYPE FILENAME . PO
   (setq *bc-current* 0)
   )
 
+;;;###autoload
 (defun bc-list (&optional other-window-p)
   "Display the breadcrumb bookmarks in the buffer `*Breadcrumb Bookmarks*' to
 allow interactive management of them.  Argument OTHER-WINDOW-P means to select

@@ -1,0 +1,177 @@
+#+TITLE:     Breadcrumb for Emacs
+#+AUTHOR:    Philip Weaver
+#+EMAIL:     philip.weaver@gmail.com
+#+DATE:      2010-09-24
+#+DESCRIPTION:
+#+KEYWORDS:
+#+LANGUAGE:  en
+#+OPTIONS:   H:3 num:nil toc:nil \n:nil @:t ::t |:t ^:t -:t f:t *:t <:t
+#+OPTIONS:   TeX:t LaTeX:nil skip:nil d:nil todo:t pri:nil tags:not-in-toc
+#+INFOJS_OPT: view:nil toc:nil ltoc:t mouse:underline buttons:0 path:http://orgmode.org/org-info.js
+
+This is a fork of the Breadcrumb 1.1.4 package that is hosted at
+http://breadcrumbemacs.sourceforge.net/.  The original package is written by
+William W. Wong.
+
+The remainder of this document is copied and pasted from the commentary written
+by William W. Wong in breadcrumb.el, with a few additions by myself (Philip
+Weaver).
+
+* License
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License version 2 as published by the Free
+Software Foundation.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with GNU
+Emacs; see the file COPYING.  If not, write to the Free Software Foundation, 675
+Mass Ave, Cambridge, MA 02139, USA.
+
+* Overview
+
+ - Set bookmarks quickly with minimal hassle.
+ - Jump to and cycle through bookmarks quickly.
+ - Bookmarks are global across buffers.
+ - Support cycling through the bookmarks in the local buffer as well.
+ - Bookmarks are persistent across Emacs editing sessions.
+ - Different types of buffer can be bookmarked: file, dired, info, and system.
+ - Integrated with find-tag and tags-search to set bookmark automatically.
+ - Bookmark menu allows interactively listing and managing of bookmarks.
+ - Interactively visit bookmarks in the other window in the bookmark menu.
+
+* Commentary
+
+The Breadcrumb package allows you to set a series of breadcrumb bookmarks in
+Emacs and later jump to them quickly.  They can be set with a key-stroke and
+jumped to with a key-stroke.  The bookmarks are global across different Emacs
+buffers and thus leaving a trail of breadcrumb among them that you can jump back
+to easily.  If a file is not loaded when jumping to its bookmark, it is loaded
+as a result.
+
+Different types of buffer can be bookmarked.  The supported types are: file,
+DIRED, *Info*, and system buffers.
+
+The breadcrumb bookmarks are not the same as the Emacs built-in bookmark, which
+requires a name.  The breadcrumb bookmarks have no names so that they can be set
+and jumped to quickly.  When one is set, it is added to a circular queue.  The
+bookmarks in the queue are cycled through when jumping.  The command bc-previous
+jumps back in the reverse order of the bookmarks added.  The command bc-next
+jumps forth in the order they are added.  Basically bc-previous goes back in the
+list and bc-next goes forth in the list.
+
+The bookmark queue's max size is controlled by the 'bc-bookmark-limit' variable.
+The oldest bookmark is dropped when adding a new one exceeds the limit.  The
+default queue limit is 16.  Feel free to increase it to the number of bookmarks
+you want to have.
+
+Emacs' find-tag and tags-search have been hooked so that a breadcrumb bookmark
+is set when they are invoked.  This allows tag search navigation to leave a
+trail of breadcrumbs to go back on.  Add more defadvice hooks on other functions
+that you want to intercept.
+
+When I started using Emacs, one feature I missed sorely from my old editor
+Epsilon is the ability to set a series of marks across different buffers and
+jump to them quickly.  Emacs has the feature of set-mark-command and C-U C-SPC
+to jump back to the marks but that only works in the same buffer.  Often time I
+needed to visit several files before jumping back to where I was, especially
+during tag-find navigation.  Another option is to use the Emacs' bookmark
+feature, but that requires giving a name in setting and jumping, which is
+cumbersome to use.
+
+Since none of the options are satisfactory, I ended up writing this package to
+address the need.  Hope you find it helpful as well.
+
+* Installation:
+
+Put breadcrumb.el in your load-path.  The load-path is usually =~/elisp/=.  It's
+set in your .emacs, like this:
+
+: (setq load-path (append (list (expand-file-name "~/elisp")) load-path))
+
+Add the following to your .emacs startup file.
+
+: (require 'breadcrumb)
+
+or add the autoloads for the public command functions.
+
+: (autoload 'bc-set               "breadcrumb" "Set bookmark in current point."   t)
+: (autoload 'bc-previous          "breadcrumb" "Go to previous bookmark."         t)
+: (autoload 'bc-next              "breadcrumb" "Go to next bookmark."             t)
+: (autoload 'bc-local-previous    "breadcrumb" "Go to previous local bookmark."   t)
+: (autoload 'bc-local-next        "breadcrumb" "Go to next local bookmark."       t)
+: (autoload 'bc-goto-current      "breadcrumb" "Go to the current bookmark."      t)
+: (autoload 'bc-list              "breadcrumb" "List all bookmarks in menu mode." t)
+: (autoload 'bc-clear             "breadcrumb" "Clear all bookmarks."             t)
+
+* Configuration:
+
+Assign the commands to some keys in your .emacs file.
+
+Examples below assign a set of keys to the breadcrumb bookmark functions.
+: (global-set-key [(shift space)]         'bc-set)            ;; Shift-SPACE for set bookmark
+: (global-set-key [(meta j)]              'bc-previous)       ;; M-j for jump to previous
+: (global-set-key [(shift meta j)]        'bc-next)           ;; Shift-M-j for jump to next
+: (global-set-key [(meta up)]             'bc-local-previous) ;; M-up-arrow for local previous
+: (global-set-key [(meta down)]           'bc-local-next)     ;; M-down-arrow for local next
+: (global-set-key [(control c)(j)]        'bc-goto-current)   ;; C-c j for jump to current bookmark
+: (global-set-key [(control x)(meta j)]   'bc-list)           ;; C-x M-j for the bookmark menu list
+
+Another set of bindings similar to MS Visual Studio bookmark setting.
+: (global-set-key [(control f2)]          'bc-set)
+: (global-set-key [(f2)]                  'bc-previous)
+: (global-set-key [(shift f2)]            'bc-next)
+: (global-set-key [(meta f2)]             'bc-list)
+
+* Acknowledgements
+
+Thanks to Karl Fogel for his bookmark.el package where I learned about
+bookmarking in Emacs.
+
+* History:
+
+- 2010/09 Philip Weaver
+    - Add argument other-window-p to bc-list function
+    - Define bc-revert-buffer and bind 'g' to revert-buffer
+    - Add bc-switch-buffer-func
+    - Other minor changes and cleanup (dos2unix, delete-trailing-whitespace,
+      eliminate compile errors and warnings)
+
+- 2008/02/29 William Wong
+    - Minor bug fixes and cleanup
+    - Version 1.1.4 release
+
+- 2008/02/10 William Wong
+    - Add hook to query-replace to set breadcrumb bookmark before replacing.
+    - Version 1.1.3 release
+
+- 2008/02/07 William Wong
+    - Add compatibility funciton for quit-window to support both Emacs and
+      XEmacs.
+    - Change the sample key bindings to be compatible with both Emacs and
+      XEmacs.
+    - Add cycling-back the cursor when deleting, un-deleting, or visiting
+      bookmarks in the Breadcrumb Bookmarks mode menu.
+    - Thanks to Thorsten Bonow for making it work on XEmacs.
+    - Version 1.1.2 release
+
+- 2008/02/01 William Wong
+    - Add a CR at the end of the saved bookmark file to stop the Emacs' warning
+      at exit.
+    - Version 1.1.1 release
+
+- 2008/01/26 William Wong
+    - Enhancement, refactoring, bug fixes.
+    - Add Breadcrumb Bookmarks mode menu.
+    - Add visiting bookmark buffers in the other window.
+    - Add saving and restoration of bookmarks across sessions.
+    - Add local buffer jump
+    - Add going to the last jumped bookmark (current bookmark).
+    - Version 1.1 release
+
+- 2004/10/18 William Wong
+    - Initial version.
+    - Version 1.0 release

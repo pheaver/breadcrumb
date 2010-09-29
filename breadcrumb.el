@@ -186,6 +186,47 @@ other buffer in other window."
   (bc-menu-mode)
   )
 
+(defun bc-bookmark-to-register (register &optional index)
+  "Save breadcrumb bookmark at index INDEX to register REGISTER.
+
+If INDEX is nil, then use the most recently jumped to bookmark,
+as indicated by `*bc-current*'"
+  (interactive "cBookmark to register: ")
+  (let* ((bookmark (or (bc-bookmarks-get (bc-menu-get-bookmark-index))
+                       (bc-bookmarks-get (or index *bc-current*))))
+         (type (bc-bookmark-type bookmark))
+         (filename (bc-bookmark-filename bookmark))
+         (position (bc-bookmark-position bookmark))
+         (buffer (cond ((or (eq type bc--type-file)
+                            (eq type bc--type-dired))
+                        (find-buffer-visiting filename))
+
+                       ((eq type bc--type-system) filename)
+
+                       ((eq type bc--type-info) nil)
+                       ;; TODO?
+                       ;; (eval-when-compile (require 'info))
+                       ;; (save-excursion
+                       ;;   (Info-find-node filename (car position))
+                       ;;   (goto-char (cdr position))
+                       ;;   (point-to-register register))
+
+                       ((eq type bc--type-unsupported)
+                        (error "Unsupported bookmark type"))
+                       (t (error "Unknown bookmark type")))))
+
+;; I had to use both `with-current-buffer' and `save-excursion' to get this to
+;; work.  Without `with-current-buffer' we end up jumping to the bookmark if
+;; this is called from the bc menu, and without `save-excursion' we end up
+;; jumping to the point if it's in the same buffer
+
+    (if buffer
+        (with-current-buffer buffer
+          (save-excursion
+            (goto-char position)
+            (point-to-register register)))
+      (set-register register (list 'file-query filename position)))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Bookmark record functions
 
@@ -563,6 +604,7 @@ It's the position (point) for normal buffer and (info-node-name point) for Info 
   (define-key *bc-menu-mode-map* "p"        'previous-line)
   (define-key *bc-menu-mode-map* "?"        'describe-mode)
   (define-key *bc-menu-mode-map* "g"        'revert-buffer)
+  (define-key *bc-menu-mode-map* "/"        'bc-bookmark-to-register)
   )
 
 (defun bc-menu-mode ()

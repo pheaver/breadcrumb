@@ -1,7 +1,7 @@
 
 ;;;### (autoloads (bc-list bc-clear bc-goto-current bc-local-next
 ;;;;;;  bc-local-previous bc-next bc-previous bc-set) "breadcrumb"
-;;;;;;  "breadcrumb.el" (19609 20451))
+;;;;;;  "breadcrumb.el" (19613 29079))
 ;;; Generated autoloads from breadcrumb.el
 
 (autoload 'bc-set "breadcrumb" "\
@@ -48,7 +48,8 @@ other buffer in other window.
 
 ;;;***
 
-;;;### (autoloads nil nil ("breadcrumb-test.el") (19609 21140 61677))
+;;;### (autoloads nil nil ("breadcrumb-test.el" "breadcrumb.el")
+;;;;;;  (19619 749 359000))
 
 ;;;***
 

@@ -452,7 +452,7 @@ It's the position (point) for normal buffer and (info-node-name point) for Info 
   (save-excursion
     (save-window-excursion
       (let ((index 0))
-        (setq inhibit-read-only t)
+        (toggle-read-only 0)
         (erase-buffer)
         (insert "*Breadcrumb Bookmarks*\n\n")
         (insert "Bookmarks listed in most recently set order.  Press '?' for help.\n")
@@ -469,6 +469,7 @@ It's the position (point) for normal buffer and (info-node-name point) for Info 
            (setq index (1+ index))
            )
          *bc-bookmarks*)
+        (toggle-read-only 1)
         )))
   )
 
@@ -525,11 +526,12 @@ It's the position (point) for normal buffer and (info-node-name point) for Info 
 (defun bc-menu-mark-char (mark-char)
   "Set a mark char on the bookmark line at cursor."
   (when (bc-menu-valid-bookmark)
-    (setq inhibit-read-only t)
+    (toggle-read-only 0)
     (beginning-of-line)
     (delete-char 1)
     (insert mark-char)
     (bc-menu-advance-cursor)
+    (toggle-read-only 1)
   ))
 
 (defun bc-menu-mark-all-char (mark-char)

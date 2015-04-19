@@ -186,6 +186,13 @@ other buffer in other window."
   (bc-menu-mode)
   )
 
+;;;###autoload
+(defun bc-delete-current ()
+  "Delete the last bookmark."
+  (interactive)
+  (setq *bc-bookmarks* (remove (bc-bookmarks-get *bc-current*) *bc-bookmarks*))
+  )
+
 (defun bc-bookmark-to-register (register &optional index)
   "Save breadcrumb bookmark at index INDEX to register REGISTER.
 

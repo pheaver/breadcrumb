@@ -49,6 +49,7 @@
       (global-set-key "\C-x\M-t"    'bc-dbgtest)
       (bc-next)
       (bc-previous)
+      (bc-delete-current)
       (bc-clear)
       (bc-list)
       *bc-bookmark-just-added*

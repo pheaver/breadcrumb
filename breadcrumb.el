@@ -44,6 +44,10 @@ The list is (Bookmark1 Bookmark2 ...) where each Bookmark is (TYPE FILENAME . PO
   "The current bookmark.  `bc-next' and `bc-previous' would use this as the starting point."
   )
 
+(defvar *bc-threshold* 240
+	"Threshold for how many characters counts as being too close to an existing bookmark for `bc-maybe-set'."
+	)
+
 (defvar *bc-bookmark-just-added* nil
   "Flag indicates a bookmark has just been added.  `bc-next' and `bc-previous' use this to determine whether to increment or decrement."
   )
@@ -112,6 +116,13 @@ The list is (Bookmark1 Bookmark2 ...) where each Bookmark is (TYPE FILENAME . PO
           (setq *bc-bookmark-just-added* t)
           (message "breadcrumb bookmark is set for the current position.")
           ))))
+  )
+
+;;;###autoload
+(defun bc-maybe-set ()
+  "Set a bookmark at the current buffer and current position, unless there is a bookmark nearby already."
+  (interactive)
+	(if (bc-nearby-bookmarks-p) nil (and (bc-set) t))
   )
 
 ;;;###autoload
@@ -277,6 +288,29 @@ INDEX the bookmark index (0-based) into the bookmark queue."
         (setq index (1- index)))
       bookmark))
   )
+
+(defun bc-local-bookmarks ()
+	"Get all local bookmarks."
+	(let* ((buffer-type (bc-get-buffer-type))
+         (buffer-filename (bc-get-buffer-filename buffer-type)))
+		(cl-remove-if
+		 (lambda (bookmark)
+			 (not (and (equal buffer-type (bc-bookmark-type bookmark))
+								 (equal buffer-filename (bc-bookmark-filename bookmark))))
+			 )
+		 *bc-bookmarks*))
+	)
+
+(defun bc-nearby-bookmarks-p ()
+	"Return true if there are any local bookmarks within *bc-threshold* characters from the current location."
+	(and
+	 (let ((position (bc-get-buffer-position (bc-get-buffer-type))))
+		 (cl-remove-if
+			(lambda (bookmark)
+				(> (abs (- position (bc-bookmark-position bookmark))) *bc-threshold*))
+			(bc-local-bookmarks)))
+	 t)
+	)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Bookmark current position functions
